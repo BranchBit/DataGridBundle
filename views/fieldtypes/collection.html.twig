@@ -1,5 +1,0 @@
-{% set collection = attribute(item, field.fieldName) %}
-
-{% for collectionItem in collection %}
-{{ attribute(collectionItem, field.options.property) }}{% if not loop.last %}, {% endif %}
-{% endfor %}
