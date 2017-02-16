@@ -11,6 +11,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class DataGridService
 {
+    private $itemsPerPage;
     /**
      * @var TwigEngine
      */
@@ -53,10 +54,14 @@ class DataGridService
     public function setQb($qb)
     {
         $this->qb = $qb;
+    }
 
-
-
-
+    /**
+     * @param mixed $itemsPerPage
+     */
+    public function setItemsPerPage($itemsPerPage)
+    {
+        $this->itemsPerPage = $itemsPerPage;
     }
 
     public function addFiltersToQb()
@@ -71,7 +76,7 @@ class DataGridService
         $this->pagedData = $this->paginator->paginate(
             $this->qb->getQuery(), /* query NOT result */
             $this->requestStack->getCurrentRequest()->query->getInt('page', 1)/*page number*/,
-            2/*limit per page*/
+            $this->itemsPerPage/*limit per page*/
         );
 
     }
