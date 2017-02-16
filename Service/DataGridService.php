@@ -88,8 +88,15 @@ class DataGridService
             if (isset($field['options'], $field['options']['callback'])) {
                 foreach ($this->pagedData->getItems() as $item) {
                     $oldValue = $accessor->getValue($item, $field['fieldName']);
+                    //use item instead of value for callback
                     $callback = $field['options']['callback'];
-                    $accessor->setValue($item, $field['fieldName'], $callback($oldValue));
+                    if ($field['type'] == 'custom_callback') {
+                        $item->{$field['fieldName']} = $callback($item);
+//                        /$accessor->setValue($item, $field['fieldName'], $callback($item));
+                    } else {
+                        $accessor->setValue($item, $field['fieldName'], $callback($oldValue));
+                    }
+
                 }
             }
         }
