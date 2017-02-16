@@ -67,7 +67,7 @@ class DataGridService
     public function addFiltersToQb()
     {
         foreach ($this->fields as $field) {
-            if (isset($field['options'], $field['options']['filterable'])) {
+            if (isset($field['options'], $field['options']['filterable']) && $field['options']['filterable']) {
                 $filterParam = $this->requestStack->getCurrentRequest()->query->get('filter');
                 $this->qb->andWhere('x.'.$field['fieldName'].' LIKE :'.$field['fieldName'])->setParameter($field['fieldName'], '%'.$filterParam[$field['fieldName']].'%');
             }
