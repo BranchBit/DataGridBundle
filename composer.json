@@ -17,7 +17,7 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "knplabs/knp-paginator-bundle": "2.5.3"
+        "knplabs/knp-paginator-bundle": "2.5.3",
         "php": ">=5.3.2"
     },
     "require-dev": {
