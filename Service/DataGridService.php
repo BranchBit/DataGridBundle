@@ -90,7 +90,10 @@ class DataGridService
                     $oldValue = $accessor->getValue($item, $field['fieldName']);
                     //use item instead of value for callback
                     $callback = $field['options']['callback'];
-                    $extraCallbackData = $field['options']['extra_callback_data'];
+                    $extraCallbackData = [];
+                    if (isset($field['options']['extra_callback_data'])) {
+                        $extraCallbackData = $field['options']['extra_callback_data'];
+                    }
                     if ($field['type'] == 'custom_callback') {
                         $item->{$field['fieldName']} = $callback($item, $extraCallbackData);
 //                        /$accessor->setValue($item, $field['fieldName'], $callback($item));
