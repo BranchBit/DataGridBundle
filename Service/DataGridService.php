@@ -11,6 +11,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class DataGridService
 {
+    private $itemsPerPage;
     /**
      * @var TwigEngine
      */
@@ -53,16 +54,20 @@ class DataGridService
     public function setQb($qb)
     {
         $this->qb = $qb;
+    }
 
-
-
-
+    /**
+     * @param mixed $itemsPerPage
+     */
+    public function setItemsPerPage($itemsPerPage)
+    {
+        $this->itemsPerPage = $itemsPerPage;
     }
 
     public function addFiltersToQb()
     {
         foreach ($this->fields as $field) {
-            if (isset($field['options'], $field['options']['filterable'])) {
+            if (isset($field['options'], $field['options']['filterable']) && $field['options']['filterable']) {
                 $filterParam = $this->requestStack->getCurrentRequest()->query->get('filter');
                 $this->qb->andWhere('x.'.$field['fieldName'].' LIKE :'.$field['fieldName'])->setParameter($field['fieldName'], '%'.$filterParam[$field['fieldName']].'%');
             }
@@ -71,7 +76,7 @@ class DataGridService
         $this->pagedData = $this->paginator->paginate(
             $this->qb->getQuery(), /* query NOT result */
             $this->requestStack->getCurrentRequest()->query->getInt('page', 1)/*page number*/,
-            2/*limit per page*/
+            $this->itemsPerPage/*limit per page*/
         );
 
     }
@@ -83,8 +88,19 @@ class DataGridService
             if (isset($field['options'], $field['options']['callback'])) {
                 foreach ($this->pagedData->getItems() as $item) {
                     $oldValue = $accessor->getValue($item, $field['fieldName']);
+                    //use item instead of value for callback
                     $callback = $field['options']['callback'];
-                    $accessor->setValue($item, $field['fieldName'], $callback($oldValue));
+                    $extraCallbackData = [];
+                    if (isset($field['options']['extra_callback_data'])) {
+                        $extraCallbackData = $field['options']['extra_callback_data'];
+                    }
+                    if ($field['type'] == 'custom_callback') {
+                        $item->{$field['fieldName']} = $callback($item, $extraCallbackData);
+//                        /$accessor->setValue($item, $field['fieldName'], $callback($item));
+                    } else {
+                        $accessor->setValue($item, $field['fieldName'], $callback($oldValue, $extraCallbackData));
+                    }
+
                 }
             }
         }
