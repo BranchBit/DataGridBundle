@@ -31,6 +31,16 @@ class DataGridService
      * @var RequestStack
      */
     private $requestStack;
+    
+    protected $extraData = [];
+
+    /**
+     * @param mixed $extraData
+     */
+    public function setExtraData($extraData)
+    {
+        $this->extraData = $extraData;
+    }
 
     /**
      * DataGridService constructor.
@@ -110,10 +120,10 @@ class DataGridService
     {
         $this->addFiltersToQb();
         $this->doCallbacks();
-        return $this->twig->render('BBITDataGridBundle:Default:grid.html.twig', [
+        return $this->twig->render('BBITDataGridBundle:Default:grid.html.twig', array_merge([
             'fields' => $this->fields,
             'data' => $this->pagedData
-            ]
+            ], $this->extraData)
 
         );
     }
