@@ -1,1 +1,5 @@
-{{ accessor.getValue(item, field.fieldName) }}
+{#{% if accessor.getValue(item, field.fieldName) %}asd#}
+{#{% endif %}#}
+
+{{ item.adminValues[field.fieldName] }}
+{#{{ dump(item.adminValues) }}#}

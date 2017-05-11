@@ -97,6 +97,9 @@ class DataGridService
 
     public function doCallbacks()
     {
+        foreach ($this->pagedData->getItems() as $item) {
+            $item->adminValues = [];
+        }
         $accessor = PropertyAccess::createPropertyAccessor();
         foreach ($this->fields as $field) {
             if (isset($field['options'], $field['options']['callback'])) {
@@ -114,9 +117,18 @@ class DataGridService
                     } else {
                         $accessor->setValue($item, $field['fieldName'], $callback($oldValue, $extraCallbackData));
                     }
-
                 }
             }
+
+            foreach ($this->pagedData->getItems() as $item) {
+                try {
+                    $item->adminValues[$field['fieldName']] = $accessor->getValue($item, $field['fieldName']);
+                } catch (\Exception $e) {
+                    $item->adminValues[$field['fieldName']] = '[NULL]';
+                }
+            }
+
+
         }
     }
 
