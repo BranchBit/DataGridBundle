@@ -116,8 +116,6 @@ class DataGridService
                     }
 
                 }
-            } else{
-
             }
         }
     }
