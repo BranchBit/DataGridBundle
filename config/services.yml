@@ -1,0 +1,5 @@
+services:
+    bbit_data_grid:
+        class: BBIT\DataGridBundle\Service\DataGridService
+        arguments: ["@templating.engine.twig", "@knp_paginator", "@request_stack"]
+        shared: false
